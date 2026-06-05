@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#4f3a8c" />
+  <title>Memora</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Registro dos baralhos. Cada matéria chama window.MEMORA.add(...) -->
+  <script>
+    window.MEMORA = {
+      decks: [],
+      add(deck) { this.decks.push(deck); }
+    };
+  </script>
+  <!-- Matérias (uma linha por matéria). A de exemplo já vem pronta. -->
+  <script src="decks/exemplo.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <button id="btn-home" class="brand" aria-label="Início">
+      <span class="brand-mark">M</span><span class="brand-name">Memora</span>
+    </button>
+    <button id="btn-back" class="ghost" hidden>‹ Voltar</button>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="footer">
+    <span>Memora · recordação ativa + repetição espaçada</span>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
