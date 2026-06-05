@@ -1,4 +1,5 @@
-/* Memora: recordação ativa + repetição espaçada (Leitner adaptado à semana). */
+/* Memora: recordação ativa + repetição espaçada (Leitner adaptado à semana),
+   com calendário de provas e estudo combinado por dia. */
 (function () {
   "use strict";
 
@@ -9,12 +10,13 @@
 
   // ---- Tempo e intervalos de Leitner (em ms) ----
   var H = 3600 * 1000, D = 24 * H;
-  // Caixa 1..5. Acertar sobe de caixa; o intervalo cresce. Pensado para uma semana:
-  // a caixa 1 reaparece em 8h (mais de uma sessão por dia), a caixa 5 só na véspera.
   var INTERVALS = { 1: 8 * H, 2: 1 * D, 3: 2 * D, 4: 4 * D, 5: 7 * D };
-  var DOMINADO = 4; // caixa a partir da qual o cartão conta como "dominado"
+  var DOMINADO = 4;
 
-  // ---- Estado persistido (localStorage) ----
+  var MES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  var DOW = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+  // ---- Progresso dos cartões (localStorage) ----
   function stateKey(deckId) { return "memora.progress." + deckId; }
   function loadState(deckId) {
     try { return JSON.parse(localStorage.getItem(stateKey(deckId))) || {}; }
@@ -23,9 +25,7 @@
   function saveState(deckId, state) {
     try { localStorage.setItem(stateKey(deckId), JSON.stringify(state)); } catch (e) {}
   }
-  function cardState(state, cardId) {
-    return state[cardId] || { box: 1, due: 0 };
-  }
+  function cardState(state, cardId) { return state[cardId] || { box: 1, due: 0 }; }
   function grade(deckId, cardId, result) {
     var state = loadState(deckId);
     var cs = cardState(state, cardId);
@@ -38,15 +38,37 @@
     cs.due = Date.now() + interval;
     state[cardId] = cs;
     saveState(deckId, state);
-    return cs;
   }
+
+  // ---- Datas de prova (editáveis, salvas no navegador) ----
+  function loadProvas() {
+    try { return JSON.parse(localStorage.getItem("memora.provas")) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveProvas(p) { try { localStorage.setItem("memora.provas", JSON.stringify(p)); } catch (e) {} }
+  function getProva(deck) {
+    var p = loadProvas();
+    return Object.prototype.hasOwnProperty.call(p, deck.id) ? p[deck.id] : (deck.prova || null);
+  }
+  function setProva(deckId, iso) {
+    var p = loadProvas();
+    p[deckId] = iso || null;
+    saveProvas(p);
+  }
+  function provasPorDia() {
+    var map = {};
+    DECKS.forEach(function (d) {
+      var iso = getProva(d);
+      if (iso) (map[iso] = map[iso] || []).push(d);
+    });
+    return map;
+  }
+  function decksDoDia(iso) { return DECKS.filter(function (d) { return getProva(d) === iso; }); }
 
   // ---- Estatísticas ----
   function dueCount(deck) {
     var state = loadState(deck.id), now = Date.now(), n = 0;
-    deck.cards.forEach(function (c) {
-      if (cardState(state, c.id).due <= now) n++;
-    });
+    deck.cards.forEach(function (c) { if (cardState(state, c.id).due <= now) n++; });
     return n;
   }
   function masteredCount(deck, unidade) {
@@ -84,11 +106,23 @@
     });
     return e;
   }
-  function clear() { app.innerHTML = ""; }
-  function diasAte(dataISO) {
-    if (!dataISO) return null;
-    var alvo = new Date(dataISO + "T23:59:59");
-    return Math.ceil((alvo - new Date()) / D);
+  function pad2(n) { return n < 10 ? "0" + n : "" + n; }
+  function parseISO(iso) { var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function todayISO() { var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  function isoOf(y, m, day) { return y + "-" + pad2(m + 1) + "-" + pad2(day); }
+  function fmtCurto(iso) { var d = parseISO(iso); return pad2(d.getDate()) + "/" + pad2(d.getMonth() + 1); }
+  function fmtLongo(iso) { var d = parseISO(iso); return DOW[d.getDay()] + ", " + fmtCurto(iso); }
+  function diasAte(iso) {
+    if (!iso) return null;
+    return Math.round((parseISO(iso) - parseISO(todayISO())) / D);
+  }
+  function labelDias(iso) {
+    var d = diasAte(iso);
+    if (d == null) return "";
+    if (d < 0) return "já passou";
+    if (d === 0) return "é hoje";
+    if (d === 1) return "amanhã";
+    return "em " + d + " dias";
   }
   function unidades(deck) {
     var set = {};
@@ -100,21 +134,22 @@
     return "Unidade " + u;
   }
 
-  // ---- Navegação ----
-  var current = null; // deck atual
-  function go(render) {
-    btnBack.hidden = render === renderHome;
-    clear();
-    render();
+  // ---- Navegação (pilha simples) ----
+  var stack = [];
+  function show(thunk) {
+    document.onkeydown = null;
+    app.innerHTML = "";
+    thunk();
     window.scrollTo(0, 0);
+    btnBack.hidden = stack.length <= 1;
   }
-  btnHome.addEventListener("click", function () { current = null; go(renderHome); });
-  btnBack.addEventListener("click", function () {
-    if (current) go(function () { renderDeck(current); });
-    else go(renderHome);
-  });
+  function navigate(thunk) { stack.push(thunk); show(thunk); }
+  function refresh() { show(stack[stack.length - 1]); }
+  function back() { if (stack.length > 1) stack.pop(); show(stack[stack.length - 1]); }
+  btnHome.addEventListener("click", function () { stack = [renderHome]; show(renderHome); });
+  btnBack.addEventListener("click", back);
 
-  // ---- Tela inicial: lista de matérias ----
+  // ---- Tela inicial ----
   function renderHome() {
     if (!DECKS.length) {
       app.appendChild(el("div", { class: "empty" }, [
@@ -124,15 +159,45 @@
       ]));
       return;
     }
-    app.appendChild(el("h1", { text: "Suas matérias" }));
-    app.appendChild(el("p", { class: "sub", text: "Toque numa matéria para estudar." }));
+    app.appendChild(el("h1", { text: "Memora" }));
+    app.appendChild(el("p", { class: "sub", text: "Suas matérias e provas em um só lugar." }));
+
+    // Agenda de provas
+    var dias = provasPorDia();
+    var datas = Object.keys(dias).filter(function (iso) { return diasAte(iso) >= 0; }).sort();
+    var agenda = el("div", { class: "panel" }, [
+      el("div", { class: "deck-title" }, [
+        el("h2", { text: "📅 Próximas provas" }),
+        el("button", { class: "action small secondary", text: "Calendário", onclick: function () { navigate(renderCalendar); } })
+      ])
+    ]);
+    if (!datas.length) {
+      agenda.appendChild(el("p", { class: "sub", html: "Defina a data de cada prova abrindo a matéria. As datas aparecem aqui e no calendário." }));
+    } else {
+      datas.forEach(function (iso) {
+        var ds = dias[iso];
+        agenda.appendChild(el("div", {
+          class: "agenda-item", onclick: function () { navigate(function () { renderDay(iso); }); }
+        }, [
+          el("div", {}, [
+            el("div", { class: "agenda-date", text: fmtLongo(iso) }),
+            el("div", { class: "agenda-subs", text: ds.map(function (d) { return d.titulo; }).join(" · ") })
+          ]),
+          el("span", { class: "agenda-when", text: labelDias(iso) })
+        ]));
+      });
+    }
+    app.appendChild(agenda);
+
+    // Lista de matérias
+    app.appendChild(el("h2", { text: "Matérias", style: "margin:18px 0 10px" }));
     DECKS.forEach(function (deck) {
       var m = masteredCount(deck);
       var pct = m.total ? Math.round(100 * m.mastered / m.total) : 0;
       var due = dueCount(deck);
-      var dias = diasAte(deck.prova);
+      var iso = getProva(deck);
       var bar = el("div", { class: "bar" }, [el("i")]);
-      var card = el("div", { class: "deck-card", onclick: function () { current = deck; go(function () { renderDeck(deck); }); } }, [
+      var card = el("div", { class: "deck-card", onclick: function () { navigate(function () { renderDeck(deck); }); } }, [
         el("div", { class: "deck-title" }, [
           el("h2", { text: deck.titulo }),
           el("span", { class: "pill " + (due ? "due" : "zero"), text: due ? (due + " p/ revisar") : "em dia ✓" })
@@ -140,7 +205,7 @@
         el("div", { class: "meta-row" }, [
           el("span", { text: "🃏 " + deck.cards.length + " cartões" }),
           el("span", { text: "✅ " + pct + "% dominado" }),
-          dias != null ? el("span", { text: "📅 prova em " + dias + (dias === 1 ? " dia" : " dias") }) : null
+          iso ? el("span", { text: "📅 prova " + labelDias(iso) }) : null
         ]),
         bar
       ]);
@@ -149,27 +214,103 @@
     });
   }
 
+  // ---- Calendário ----
+  var calRef = (function () { var d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })();
+  function renderCalendar() {
+    var y = calRef.y, m = calRef.m;
+    var dias = provasPorDia();
+    app.appendChild(el("div", { class: "cal-head" }, [
+      el("h2", { text: MES[m] + " de " + y }),
+      el("div", { class: "cal-nav" }, [
+        el("button", { class: "action small secondary", text: "‹", onclick: function () { calRef.m--; if (calRef.m < 0) { calRef.m = 11; calRef.y--; } refresh(); } }),
+        el("button", { class: "action small secondary", text: "Hoje", onclick: function () { var d = new Date(); calRef = { y: d.getFullYear(), m: d.getMonth() }; refresh(); } }),
+        el("button", { class: "action small secondary", text: "›", onclick: function () { calRef.m++; if (calRef.m > 11) { calRef.m = 0; calRef.y++; } refresh(); } })
+      ])
+    ]));
+    var grid = el("div", { class: "cal-grid" });
+    DOW.forEach(function (d) { grid.appendChild(el("div", { class: "cal-dow", text: d })); });
+    var first = new Date(y, m, 1).getDay();
+    var total = new Date(y, m + 1, 0).getDate();
+    for (var i = 0; i < first; i++) grid.appendChild(el("div", { class: "cal-cell empty" }));
+    var hoje = todayISO();
+    for (var day = 1; day <= total; day++) {
+      var iso = isoOf(y, m, day);
+      var ds = dias[iso];
+      var cls = "cal-cell" + (iso === hoje ? " today" : "") + (ds ? " has" : "");
+      var cell = el("div", { class: cls }, [el("span", { text: "" + day })]);
+      if (ds) {
+        cell.appendChild(el("span", { class: "cal-badge", text: "" + ds.length }));
+        cell.appendChild(el("span", { class: "cal-dot" }));
+        (function (isoFixed) { cell.addEventListener("click", function () { navigate(function () { renderDay(isoFixed); }); }); })(iso);
+      }
+      grid.appendChild(cell);
+    }
+    app.appendChild(grid);
+    app.appendChild(el("p", { class: "sub", style: "margin-top:16px;text-align:center", text: "Toque num dia marcado para estudar as provas daquele dia." }));
+  }
+
+  // ---- Dia (provas de uma data) ----
+  function renderDay(iso) {
+    var ds = decksDoDia(iso);
+    app.appendChild(el("h1", { text: "Provas de " + fmtCurto(iso) }));
+    app.appendChild(el("p", { class: "sub", text: fmtLongo(iso) + " · " + labelDias(iso) }));
+    if (!ds.length) {
+      app.appendChild(el("div", { class: "empty" }, [
+        el("span", { class: "emoji", text: "🗓️" }),
+        el("p", { text: "Nenhuma prova marcada nesse dia." })
+      ]));
+      return;
+    }
+    if (ds.length > 1) {
+      var temQuiz = ds.some(function (d) { return d.quiz && d.quiz.length; });
+      app.appendChild(el("div", { class: "btn-row" }, [
+        el("button", { class: "action", text: "Estudar todas juntas", onclick: function () { startSession(buildItems(ds, { mode: "revisao" }), { label: "Provas de " + fmtCurto(iso), multi: true }); } }),
+        el("button", { class: "action secondary", text: "🔥 Reta final juntas", onclick: function () { startSession(buildItems(ds, { mode: "retafinal" }), { label: "Reta final · " + fmtCurto(iso), multi: true }); } }),
+        temQuiz ? el("button", { class: "action secondary", text: "📝 Quiz do dia", onclick: function () { startQuiz(buildQuiz(ds, {}), { label: "Quiz do dia", multi: true }); } }) : null
+      ]));
+      app.appendChild(el("p", { class: "sub", style: "margin:14px 0 6px", text: "Ou estude uma de cada vez:" }));
+    }
+    ds.forEach(function (deck) {
+      var due = dueCount(deck);
+      app.appendChild(el("div", { class: "panel" }, [
+        el("div", { class: "deck-title" }, [
+          el("h2", { text: deck.titulo }),
+          el("span", { class: "pill " + (due ? "due" : "zero"), text: due ? (due + " p/ revisar") : "em dia ✓" })
+        ]),
+        el("div", { class: "btn-row" }, [
+          el("button", { class: "action small", text: "Estudar", disabled: due === 0, onclick: function () { studyDeck(deck, { mode: "revisao" }); } }),
+          el("button", { class: "action small secondary", text: "🔥 Reta final", onclick: function () { studyDeck(deck, { mode: "retafinal" }); } }),
+          el("button", { class: "action small secondary", text: "Abrir matéria", onclick: function () { navigate(function () { renderDeck(deck); }); } })
+        ])
+      ]));
+    });
+  }
+
   // ---- Tela da matéria ----
   function renderDeck(deck) {
-    var dias = diasAte(deck.prova);
+    var iso = getProva(deck);
     app.appendChild(el("h1", { text: deck.titulo }));
     var subTxt = "";
-    if (dias != null) subTxt = "Prova em " + dias + (dias === 1 ? " dia. " : " dias. ");
+    if (iso) subTxt = "Prova " + labelDias(iso) + ". ";
     app.appendChild(el("p", { class: "sub", text: subTxt + dueCount(deck) + " cartões para revisar agora." }));
 
-    // Botões principais
-    var due = dueCount(deck);
-    app.appendChild(el("div", { class: "btn-row" }, [
-      el("button", {
-        class: "action", text: "Estudar agora" + (due ? " (" + due + ")" : ""),
-        disabled: due === 0,
-        onclick: function () { startStudy(deck, { mode: "revisao" }); }
+    // Editor de data da prova
+    app.appendChild(el("div", { class: "daterow" }, [
+      el("span", { text: "📅 Data da prova:" }),
+      el("input", {
+        type: "date", value: iso || "",
+        onchange: function (ev) { setProva(deck.id, ev.target.value); refresh(); }
       }),
-      el("button", { class: "action secondary", text: "🔥 Reta final", onclick: function () { startStudy(deck, { mode: "retafinal" }); } }),
-      deck.quiz && deck.quiz.length ? el("button", { class: "action secondary", text: "📝 Quiz", onclick: function () { startQuiz(deck, {}); } }) : null
+      iso ? el("button", { class: "link", text: "limpar", onclick: function () { setProva(deck.id, ""); refresh(); } }) : null
     ]));
 
-    // Unidades
+    var due = dueCount(deck);
+    app.appendChild(el("div", { class: "btn-row" }, [
+      el("button", { class: "action", text: "Estudar agora" + (due ? " (" + due + ")" : ""), disabled: due === 0, onclick: function () { studyDeck(deck, { mode: "revisao" }); } }),
+      el("button", { class: "action secondary", text: "🔥 Reta final", onclick: function () { studyDeck(deck, { mode: "retafinal" }); } }),
+      (deck.quiz && deck.quiz.length) ? el("button", { class: "action secondary", text: "📝 Quiz", onclick: function () { startQuiz(buildQuiz([deck], {}), { label: "Quiz", multi: false }); } }) : null
+    ]));
+
     var panel = el("div", { class: "panel" }, [el("h2", { text: "Unidades" })]);
     unidades(deck).forEach(function (u) {
       var m = masteredCount(deck, u);
@@ -178,13 +319,13 @@
       panel.appendChild(el("div", { class: "unit" }, [
         el("div", { class: "unit-head" }, [
           el("span", { class: "unit-name", text: nomeUnidade(deck, u) }),
-          el("span", { class: "unit-count", text: m.mastered + "/" + m.total }),
+          el("span", { class: "unit-count", text: m.mastered + "/" + m.total })
         ]),
         bar,
         el("div", { class: "btn-row" }, [
-          el("button", { class: "action small secondary", text: "Estudar unidade", onclick: function () { startStudy(deck, { mode: "retafinal", unidade: u }); } }),
+          el("button", { class: "action small secondary", text: "Estudar unidade", onclick: function () { studyDeck(deck, { mode: "retafinal", unidade: u }); } }),
           (deck.quiz && deck.quiz.some(function (q) { return q.unidade === u; }))
-            ? el("button", { class: "action small secondary", text: "Quiz", onclick: function () { startQuiz(deck, { unidade: u }); } }) : null
+            ? el("button", { class: "action small secondary", text: "Quiz", onclick: function () { startQuiz(buildQuiz([deck], { unidade: u }), { label: "Quiz", multi: false }); } }) : null
         ])
       ]));
       requestAnimationFrame(function () { bar.firstChild.style.width = pct + "%"; });
@@ -197,168 +338,166 @@
         onclick: function () {
           if (confirm("Apagar o progresso de \"" + deck.titulo + "\"?")) {
             localStorage.removeItem(stateKey(deck.id));
-            go(function () { renderDeck(deck); });
+            refresh();
           }
         }
       })
     ]));
   }
 
-  // ---- Sessão de estudo (flashcards) ----
-  function startStudy(deck, opts) {
-    var pool = deck.cards.filter(function (c) {
-      return opts.unidade == null || c.unidade === opts.unidade;
+  // ---- Montagem de itens ----
+  function buildItems(decks, opts) {
+    opts = opts || {};
+    var now = Date.now(), items = [];
+    decks.forEach(function (deck) {
+      var state = loadState(deck.id);
+      deck.cards.forEach(function (c) {
+        if (opts.unidade != null && c.unidade !== opts.unidade) return;
+        if (opts.mode === "revisao" && cardState(state, c.id).due > now) return;
+        items.push({ deck: deck, card: c });
+      });
     });
-    if (opts.mode === "revisao") {
-      var state = loadState(deck.id), now = Date.now();
-      pool = pool.filter(function (c) { return cardState(state, c.id).due <= now; });
-    }
-    if (!pool.length) {
-      go(function () {
+    return items;
+  }
+  function buildQuiz(decks, opts) {
+    opts = opts || {};
+    var items = [];
+    decks.forEach(function (deck) {
+      (deck.quiz || []).forEach(function (q) {
+        if (opts.unidade != null && q.unidade !== opts.unidade) return;
+        items.push({ deck: deck, q: q });
+      });
+    });
+    return items;
+  }
+  function studyDeck(deck, opts) {
+    var label = (opts.mode === "retafinal" ? "Reta final" : "Revisão") + (opts.unidade != null ? " · " + nomeUnidade(deck, opts.unidade) : "");
+    startSession(buildItems([deck], opts), { label: label, multi: false });
+  }
+
+  // ---- Sessão de estudo (flashcards) ----
+  function startSession(items, opts) {
+    opts = opts || {};
+    if (!items.length) {
+      navigate(function () {
         app.appendChild(el("div", { class: "empty" }, [
           el("span", { class: "emoji", text: "🎉" }),
-          el("p", { text: "Nada pendente agora. Tudo em dia!" }),
-          el("button", { class: "action secondary", text: "Voltar", onclick: function () { go(function () { renderDeck(deck); }); } })
+          el("p", { text: "Nada pendente por aqui. Tudo em dia!" }),
+          el("div", { class: "btn-row" }, [el("button", { class: "action", text: "Voltar", onclick: back })])
         ]));
       });
       return;
     }
-    var queue = shuffle(pool);
-    var total = queue.length, done = 0;
+    var multi = !!opts.multi;
+    var queue = shuffle(items);
+    var total = queue.length;
+    var revealed = false, done = false;
 
-    function next() {
-      if (!queue.length) return summary();
-      var card = queue[0];
-      go(function () { renderCard(card); });
+    function answer(result) {
+      var it = queue[0];
+      grade(it.deck.id, it.card.id, result);
+      queue.shift();
+      if (result !== "acertei") queue.push(it);
+      revealed = false;
+      if (!queue.length) done = true;
+      refresh();
     }
-    function renderCard(card) {
+    function renderCurrent() {
+      if (done) {
+        app.appendChild(el("div", { class: "empty" }, [
+          el("span", { class: "emoji", text: "✅" }),
+          el("h2", { text: "Sessão concluída!" }),
+          el("p", { class: "sub", text: "Você revisou " + total + (total === 1 ? " cartão." : " cartões.") }),
+          el("div", { class: "btn-row" }, [el("button", { class: "action", text: "Voltar", onclick: back })])
+        ]));
+        return;
+      }
+      var it = queue[0], card = it.card, deck = it.deck;
       app.appendChild(el("div", { class: "study-top" }, [
-        el("span", { text: (opts.mode === "retafinal" ? "Reta final" : "Revisão") + (opts.unidade != null ? " · " + nomeUnidade(deck, opts.unidade) : "") }),
+        el("span", { text: opts.label || "Estudo" }),
         el("span", { text: "Faltam " + queue.length })
       ]));
+      var tag = (multi ? deck.titulo + " · " : "") + nomeUnidade(deck, card.unidade);
       var fc = el("div", { class: "flashcard" }, [
-        el("div", { class: "tag", text: nomeUnidade(deck, card.unidade) }),
+        el("div", { class: "tag", text: tag }),
         el("div", { class: "front", html: card.frente })
       ]);
-      app.appendChild(fc);
-      var reveal = el("button", { class: "action", text: "Mostrar resposta", onclick: showBack });
-      var revealRow = el("div", { class: "btn-row" }, [reveal]);
-      app.appendChild(revealRow);
-
-      function showBack() {
+      if (revealed) {
         fc.appendChild(el("div", { class: "divider" }));
         fc.appendChild(el("div", { class: "back", html: card.verso }));
         if (card.dica) fc.appendChild(el("div", { class: "hint", text: "💡 " + card.dica }));
-        revealRow.remove();
+      }
+      app.appendChild(fc);
+      if (!revealed) {
+        app.appendChild(el("div", { class: "btn-row" }, [
+          el("button", { class: "action", text: "Mostrar resposta", onclick: function () { revealed = true; refresh(); } })
+        ]));
+        document.onkeydown = function (ev) { if (ev.key === " " || ev.key === "Enter") { ev.preventDefault(); revealed = true; refresh(); } };
+      } else {
         app.appendChild(el("div", { class: "grade-row" }, [
           el("button", { class: "g-bad", html: "Errei<span class='kbd'>1</span>", onclick: function () { answer("errei"); } }),
           el("button", { class: "g-hard", html: "Difícil<span class='kbd'>2</span>", onclick: function () { answer("dificil"); } }),
           el("button", { class: "g-ok", html: "Acertei<span class='kbd'>3</span>", onclick: function () { answer("acertei"); } })
         ]));
-        document.onkeydown = function (ev) {
-          if (ev.key === "1") answer("errei");
-          else if (ev.key === "2") answer("dificil");
-          else if (ev.key === "3") answer("acertei");
-        };
-      }
-      document.onkeydown = function (ev) { if (ev.key === " " || ev.key === "Enter") { ev.preventDefault(); showBack(); } };
-
-      function answer(result) {
-        document.onkeydown = null;
-        grade(deck.id, card.id, result);
-        queue.shift();
-        if (result !== "acertei") queue.push(card); // erro/difícil volta no fim desta sessão
-        else done++;
-        next();
+        document.onkeydown = function (ev) { if (ev.key === "1") answer("errei"); else if (ev.key === "2") answer("dificil"); else if (ev.key === "3") answer("acertei"); };
       }
     }
-    function summary() {
-      document.onkeydown = null;
-      go(function () {
-        app.appendChild(el("div", { class: "empty" }, [
-          el("span", { class: "emoji", text: "✅" }),
-          el("h2", { text: "Sessão concluída!" }),
-          el("p", { class: "sub", text: "Você revisou " + total + " cartões." }),
-          el("div", { class: "btn-row" }, [
-            el("button", { class: "action", text: "Voltar à matéria", onclick: function () { go(function () { renderDeck(deck); }); } })
-          ])
-        ]));
-      });
-    }
-    next();
+    navigate(renderCurrent);
   }
 
-  // ---- Quiz (múltipla escolha) ----
-  function startQuiz(deck, opts) {
-    var pool = (deck.quiz || []).filter(function (q) {
-      return opts.unidade == null || q.unidade === opts.unidade;
-    });
-    if (!pool.length) { go(function () { renderDeck(deck); }); return; }
-    var questions = shuffle(pool), i = 0, score = 0;
+  // ---- Quiz ----
+  function startQuiz(items, opts) {
+    opts = opts || {};
+    if (!items.length) { back(); return; }
+    var multi = !!opts.multi;
+    var qs = shuffle(items), i = 0, score = 0, answered = false, chosen = -1, done = false;
 
-    function renderQ() {
-      var q = questions[i];
-      go(function () {
-        app.appendChild(el("div", { class: "study-top" }, [
-          el("span", { text: "Quiz" }),
-          el("span", { text: (i + 1) + " / " + questions.length })
-        ]));
-        app.appendChild(el("div", { class: "panel" }, [
-          el("div", { class: "tag", text: nomeUnidade(deck, q.unidade), style: "color:var(--brand);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px" }),
-          el("h2", { html: q.pergunta })
-        ]));
-        var opts = el("div", {});
-        q.opcoes.forEach(function (texto, idx) {
-          opts.appendChild(el("button", {
-            class: "quiz-opt", html: texto,
-            onclick: function () { choose(idx, opts, q); }
-          }));
-        });
-        app.appendChild(opts);
-      });
-    }
-    function choose(idx, opts, q) {
-      var buttons = opts.querySelectorAll("button");
-      buttons.forEach(function (b, k) {
-        b.disabled = true;
-        if (k === q.correta) b.classList.add("correct");
-        else if (k === idx) b.classList.add("wrong");
-      });
-      if (idx === q.correta) score++;
-      if (q.explicacao) app.appendChild(el("div", { class: "explain", html: "💡 " + q.explicacao }));
-      app.appendChild(el("div", { class: "btn-row" }, [
-        el("button", {
-          class: "action",
-          text: i + 1 < questions.length ? "Próxima" : "Ver resultado",
-          onclick: function () { i++; if (i < questions.length) renderQ(); else result(); }
-        })
-      ]));
-    }
-    function result() {
-      go(function () {
-        var pct = Math.round(100 * score / questions.length);
+    function choose(idx) { if (answered) return; answered = true; chosen = idx; if (idx === qs[i].q.correta) score++; refresh(); }
+    function nextQ() { i++; answered = false; chosen = -1; if (i >= qs.length) done = true; refresh(); }
+    function renderCurrent() {
+      if (done) {
+        var pct = Math.round(100 * score / qs.length);
         app.appendChild(el("div", { class: "empty" }, [
           el("span", { class: "emoji", text: pct >= 70 ? "🏆" : "💪" }),
           el("h2", { text: "Resultado" }),
-          el("div", { class: "big-num", text: score + " / " + questions.length }),
+          el("div", { class: "big-num", text: score + " / " + qs.length }),
           el("p", { class: "sub", text: pct + "% de acerto" }),
-          el("div", { class: "btn-row" }, [
-            el("button", { class: "action secondary", text: "Refazer", onclick: function () { startQuiz(deck, opts); } }),
-            el("button", { class: "action", text: "Voltar", onclick: function () { go(function () { renderDeck(deck); }); } })
-          ])
+          el("div", { class: "btn-row" }, [el("button", { class: "action", text: "Voltar", onclick: back })])
         ]));
+        return;
+      }
+      var item = qs[i], q = item.q, deck = item.deck;
+      app.appendChild(el("div", { class: "study-top" }, [
+        el("span", { text: opts.label || "Quiz" }),
+        el("span", { text: (i + 1) + " / " + qs.length })
+      ]));
+      app.appendChild(el("div", { class: "panel" }, [
+        el("div", { class: "qtag", text: (multi ? deck.titulo + " · " : "") + nomeUnidade(deck, q.unidade) }),
+        el("h2", { html: q.pergunta })
+      ]));
+      var box = el("div", {});
+      q.opcoes.forEach(function (texto, idx) {
+        var cls = "quiz-opt";
+        if (answered) { if (idx === q.correta) cls += " correct"; else if (idx === chosen) cls += " wrong"; }
+        box.appendChild(el("button", { class: cls, html: texto, disabled: answered || undefined, onclick: function () { choose(idx); } }));
       });
+      app.appendChild(box);
+      if (answered) {
+        if (q.explicacao) app.appendChild(el("div", { class: "explain", html: "💡 " + q.explicacao }));
+        app.appendChild(el("div", { class: "btn-row" }, [
+          el("button", { class: "action", text: i + 1 < qs.length ? "Próxima" : "Ver resultado", onclick: nextQ })
+        ]));
+      }
     }
-    renderQ();
+    navigate(renderCurrent);
   }
 
-  // ---- PWA: service worker (só quando servido por http/https) ----
+  // ---- PWA ----
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("sw.js").catch(function () {});
-    });
+    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
   }
 
   // Início
-  go(renderHome);
+  stack = [renderHome];
+  show(renderHome);
 })();
