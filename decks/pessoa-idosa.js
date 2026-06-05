@@ -7,7 +7,8 @@ window.MEMORA.add({
   titulo: "Pessoa Idosa e Direitos Sociais",
   prova: null, // defina a data da prova abrindo a matéria no app
   unidades: {
-    1: "Unidade I"
+    1: "Unidade I",
+    2: "Unidade II"
   },
   cards: [
     // --- Direito público e privado ---
@@ -71,7 +72,69 @@ window.MEMORA.add({
     { id: "u1-44", unidade: 1, frente: "Quais as <b>fases</b> da infecção pelo HIV?", verso: "1) Aguda (incubação, 3 a 6 semanas); 2) assintomática (pode durar anos); 3) sintomática inicial (emagrecimento, febre, diarreia); 4) avançada, com doenças oportunistas." },
     { id: "u1-45", unidade: 1, frente: "Desde quando o <b>SUS</b> fornece antirretrovirais e desde quando o tratamento é para todos?", verso: "Antirretrovirais gratuitos desde <b>1996</b>; tratamento garantido para <b>todas</b> as pessoas com HIV desde <b>2013</b>." },
     { id: "u1-46", unidade: 1, frente: "Quanto aumentou o número de pessoas idosas com HIV na última década?", verso: "Aumentou <b>103%</b>." },
-    { id: "u1-47", unidade: 1, frente: "Segundo a OMS, qual a projeção de HIV entre idosos para <b>2030</b>?", verso: "Estima-se que <b>70%</b> da população mundial de pessoas idosas será portadora do HIV." }
+    { id: "u1-47", unidade: 1, frente: "Segundo a OMS, qual a projeção de HIV entre idosos para <b>2030</b>?", verso: "Estima-se que <b>70%</b> da população mundial de pessoas idosas será portadora do HIV." },
+
+    // ===== UNIDADE II =====
+    // Vulnerabilidade e tratamento diferenciado
+    { id: "u2-01", unidade: 2, frente: "O que é <b>vulnerabilidade</b>?", verso: "Estado ou qualidade de quem é vulnerável: fragilidade, possibilidade de ser ferido ou de adoecer. A pessoa idosa (60+) merece proteção diferenciada." },
+    { id: "u2-02", unidade: 2, frente: "O que proíbe o <b>art. 7º, XXX, da Constituição</b>?", verso: "A diferença de salários, de funções e de critério de admissão por motivo de <b>sexo, idade, cor ou estado civil</b>." },
+    { id: "u2-03", unidade: 2, frente: "O que diz o <b>art. 229 da Constituição</b> sobre pais e filhos?", verso: "Os pais devem assistir, criar e educar os filhos menores; os filhos maiores devem <b>ajudar e amparar os pais na velhice</b>, carência ou enfermidade." },
+    { id: "u2-04", unidade: 2, frente: "O que estabelece o <b>art. 230 da Constituição</b>?", verso: "Família, sociedade e Estado devem amparar a pessoa idosa; os programas serão executados <b>preferencialmente no lar</b>; aos maiores de <b>65 anos</b>, transporte coletivo urbano gratuito." },
+    { id: "u2-05", unidade: 2, frente: "Qual lei é a <b>Política Nacional do Idoso</b> e qual seu objetivo?", verso: "<b>Lei nº 8.842, de 4 de janeiro de 1994</b>. Assegura os direitos sociais e cria condições de autonomia, integração e participação efetiva na sociedade (art. 1º)." },
+
+    // Mercado de consumo e CDC
+    { id: "u2-06", unidade: 2, frente: "Por que a defesa do consumidor é <b>direito fundamental</b>?", verso: "A Constituição (a \"Constituição Cidadã\") prevê, no <b>art. 5º, XXXII</b>, que o Estado promoverá a defesa do consumidor." },
+    { id: "u2-07", unidade: 2, frente: "Qual lei é o <b>Código de Defesa do Consumidor</b>?", verso: "<b>Lei nº 8.078, de 11 de setembro de 1990</b>." },
+    { id: "u2-08", unidade: 2, frente: "O que o CDC reconhece sobre o consumidor? (art. 4º, I)", verso: "Reconhece a <b>vulnerabilidade</b> do consumidor no mercado de consumo." },
+    { id: "u2-09", unidade: 2, frente: "Quais são os três tipos de <b>vulnerabilidade</b> do consumidor?", verso: "<b>Técnica</b> (não conhece o produto), <b>socioeconômica</b> (desproporção de poder) e <b>jurídica</b> (falta de conhecimentos específicos)." },
+    { id: "u2-10", unidade: 2, frente: "O que veda o <b>art. 39, IV, do CDC</b>?", verso: "Prevalecer-se da <b>fraqueza ou ignorância</b> do consumidor, em razão de idade, saúde, conhecimento ou condição social, para impingir produtos ou serviços." },
+    { id: "u2-11", unidade: 2, frente: "O que é <b>hipervulnerabilidade</b>?", verso: "O agravamento da vulnerabilidade do consumidor por características pessoais aparentes ou conhecidas pelo fornecedor.", dica: "\"Hiper\" = alto grau, ultrapassa a medida normal." },
+    { id: "u2-12", unidade: 2, frente: "Quem são considerados <b>hipervulneráveis</b>?", verso: "Pessoas idosas, crianças, enfermos, entre outros. (REsp 931.513-RS, Min. Herman Benjamin.)" },
+    { id: "u2-13", unidade: 2, frente: "Enviar <b>cartão de crédito não solicitado</b> à pessoa idosa gera o quê?", verso: "É <b>prática abusiva</b> (CDC art. 39, III) e gera <b>dano moral</b>, agravado pela idade avançada. (STJ, REsp 1.061.500-RS, Min. Sidnei Beneti.)" },
+    { id: "u2-14", unidade: 2, frente: "Qual a comparação feita sobre o mal da <b>solidão</b> na pessoa idosa?", verso: "Faz à saúde o mesmo mal que <b>fumar 15 cigarros por dia</b>; aumenta risco de AVC e doenças coronarianas e pode evoluir para depressão." },
+    { id: "u2-15", unidade: 2, frente: "Por que a pessoa idosa <b>LGBT</b> \"sofre duplamente\"?", verso: "Soma a discriminação por idade à discriminação por orientação/identidade; muitas escondem a identidade em instituições de longa permanência, o que agrava a depressão." },
+
+    // Família e alimentos
+    { id: "u2-16", unidade: 2, frente: "O que diz o <b>art. 226 da Constituição</b> sobre a família?", verso: "A família é a <b>base da sociedade</b> e tem <b>proteção especial do Estado</b>." },
+    { id: "u2-17", unidade: 2, frente: "Qual a frase do STJ sobre o dever de cuidado dos filhos?", verso: "\"<b>Amar é faculdade, cuidar é dever</b>\" (REsp 1.159.242-SP, Min. Nancy Andrighi)." },
+    { id: "u2-18", unidade: 2, frente: "O que protege o <b>art. 4º do Estatuto da Pessoa Idosa</b>?", verso: "Nenhuma pessoa idosa será objeto de negligência, discriminação, violência, crueldade ou opressão; todo atentado, por ação ou omissão, será punido." },
+    { id: "u2-19", unidade: 2, frente: "Como é a obrigação alimentar à pessoa idosa? (arts. 11 e 12 do EPI)", verso: "Os alimentos seguem a lei civil (art. 11) e a obrigação é <b>solidária</b>, podendo a pessoa idosa <b>optar entre os prestadores</b> (art. 12)." },
+    { id: "u2-20", unidade: 2, frente: "Quem provê o sustento da pessoa idosa sem condições? (art. 14 do EPI)", verso: "O <b>Poder Público</b>, no âmbito da assistência social, se a pessoa idosa ou seus familiares não tiverem condições." },
+    { id: "u2-21", unidade: 2, frente: "Quem pode pedir alimentos e quando são devidos? (arts. 1.694 e 1.695 do CC)", verso: "Parentes, cônjuges ou companheiros (art. 1.694). São devidos quando quem pede não tem como se manter e quem paga pode fazê-lo sem desfalque do próprio sustento (art. 1.695)." },
+    { id: "u2-22", unidade: 2, frente: "Como funciona a reciprocidade dos alimentos? (art. 1.696 do CC)", verso: "É <b>recíproco entre pais e filhos</b>, extensivo a todos os ascendentes, recaindo nos mais próximos em grau." },
+    { id: "u2-23", unidade: 2, frente: "Na falta de ascendentes, a quem cabe a obrigação alimentar? (art. 1.697 do CC)", verso: "Aos <b>descendentes</b> (na ordem de sucessão) e, faltando estes, aos <b>irmãos</b> (germanos e unilaterais)." },
+
+    // Obrigação de indenizar
+    { id: "u2-24", unidade: 2, frente: "O que é <b>ato ilícito</b>? (art. 186 do CC)", verso: "Quem, por ação ou omissão voluntária, negligência ou imprudência, viola direito e causa dano a outrem, ainda que só moral." },
+    { id: "u2-25", unidade: 2, frente: "O que é <b>abuso de direito</b>? (art. 187 do CC)", verso: "O titular de um direito que, ao exercê-lo, excede os limites do seu fim econômico ou social, da boa-fé ou dos bons costumes, também comete ato ilícito." },
+    { id: "u2-26", unidade: 2, frente: "Qual a consequência do ato ilícito? (art. 927 do CC)", verso: "Quem causa dano a outrem por ato ilícito fica <b>obrigado a repará-lo</b>." },
+
+    // Crimes
+    { id: "u2-27", unidade: 2, frente: "Qual o princípio do <b>art. 5º, XXXIX, da Constituição</b>?", verso: "<b>Legalidade/anterioridade penal</b>: não há crime sem lei anterior que o defina, nem pena sem prévia cominação legal." },
+    { id: "u2-28", unidade: 2, frente: "O que acontece com a pena do <b>estelionato</b> (art. 171 do CP) contra a pessoa idosa?", verso: "A pena (reclusão de 1 a 5 anos e multa) é <b>aplicada em dobro</b> se o crime for cometido contra a pessoa idosa (§ 4º)." },
+    { id: "u2-29", unidade: 2, frente: "O que pune o <b>art. 244 do CP</b> (abandono material)?", verso: "Deixar, sem justa causa, de prover a subsistência de cônjuge, filho menor de 18 ou inapto, ou <b>ascendente inválido ou maior de 60</b>. Pena: detenção de 1 a 4 anos e multa." },
+    { id: "u2-30", unidade: 2, frente: "Quais artigos do Estatuto tratam dos <b>crimes em espécie</b>?", verso: "Os <b>arts. 95 a 108</b> do Estatuto da Pessoa Idosa." },
+    { id: "u2-31", unidade: 2, frente: "O que é crime pelo <b>art. 96 do Estatuto</b>?", verso: "Discriminar a pessoa idosa, impedindo ou dificultando acesso a operações bancárias, transporte ou ao direito de contratar; desdém, humilhação ou menosprezo. Pena <b>aumentada de 1/3</b> se a vítima estiver sob os cuidados do agente." },
+    { id: "u2-32", unidade: 2, frente: "O que é crime pelo <b>art. 97 do Estatuto</b>?", verso: "Deixar de prestar assistência à pessoa idosa em iminente perigo, quando possível sem risco pessoal, ou recusar/retardar/dificultar sua assistência à saúde sem justa causa." },
+    { id: "u2-33", unidade: 2, frente: "O que é crime pelos <b>arts. 98 e 99 do Estatuto</b>?", verso: "Art. 98: <b>abandonar</b> a pessoa idosa em hospitais ou instituições, ou não prover suas necessidades. Art. 99: <b>expor a perigo</b> a saúde física ou psíquica, em condições desumanas ou degradantes." },
+    { id: "u2-34", unidade: 2, frente: "Que benefícios a idade dá ao <b>agente maior de 70 anos</b>? (CP arts. 65, I e 115)", verso: "É <b>atenuante</b> de pena ser maior de 70 na época dos fatos (art. 65, I), e a <b>prescrição é reduzida pela metade</b> se ele era maior de 70 no crime ou na sentença (art. 115).", dica: "Aqui o número é 70, não 60." },
+
+    // Autonomia e negócio jurídico
+    { id: "u2-35", unidade: 2, frente: "O que é <b>autonomia</b>?", verso: "A habilidade de escolher o melhor para si conforme a própria vontade, respeitando a vontade alheia e ciente das consequências das escolhas." },
+    { id: "u2-36", unidade: 2, frente: "O que é <b>autonomia privada</b>?", verso: "A expressão da <b>liberdade negocial</b> (não é liberdade ampla e irrestrita)." },
+    { id: "u2-37", unidade: 2, frente: "O que é <b>negócio jurídico</b>?", verso: "Ato (ou atos) que visa produzir efeitos jurídicos: adquirir, conservar, modificar ou extinguir direitos." },
+    { id: "u2-38", unidade: 2, frente: "Quais os <b>requisitos de existência</b> do negócio jurídico?", verso: "Manifestação da vontade (expressa, tácita ou presumida), finalidade negocial e idoneidade do objeto." },
+    { id: "u2-39", unidade: 2, frente: "Quais os <b>requisitos de validade</b> do negócio jurídico? (art. 104 do CC)", verso: "<b>Capacidade</b> do agente; <b>objeto</b> lícito, possível, determinado ou determinável; e <b>forma</b> prescrita ou não defesa em lei.", dica: "Atenção: finalidade negocial é requisito de EXISTÊNCIA, não de validade." },
+    { id: "u2-40", unidade: 2, frente: "O que é <b>condição</b>? (art. 121 do CC)", verso: "Cláusula que subordina o efeito do negócio a evento <b>futuro e incerto</b>." },
+    { id: "u2-41", unidade: 2, frente: "O que é <b>termo</b>? (art. 132 do CC)", verso: "O momento em que começam ou acabam os efeitos do negócio: evento <b>futuro e certo</b>.", dica: "Condição = incerto; termo = certo." },
+    { id: "u2-42", unidade: 2, frente: "O que é <b>encargo</b>? (art. 136 do CC)", verso: "Um <b>ônus</b>. Não suspende a aquisição nem o exercício do direito, salvo se imposto expressamente como condição suspensiva." },
+    { id: "u2-43", unidade: 2, frente: "Quais são os <b>defeitos do negócio jurídico</b>?", verso: "Vícios do consentimento: <b>erro, dolo, coação, estado de perigo e lesão</b>. Vício social: <b>fraude contra credores</b>." },
+
+    // Casamento e regime de bens
+    { id: "u2-44", unidade: 2, frente: "A partir de que idade se pode casar e com qual condição? (art. 1.517 do CC)", verso: "Aos <b>16 anos</b>, exigindo-se <b>autorização dos pais</b> ou representantes legais até a maioridade." },
+    { id: "u2-45", unidade: 2, frente: "Qual o regime de bens se os nubentes <b>não</b> fizerem convenção? (art. 1.640 do CC)", verso: "O regime da <b>comunhão parcial</b> de bens." },
+    { id: "u2-46", unidade: 2, frente: "Para quem o <b>regime da separação de bens é obrigatório</b>? (art. 1.641, II do CC)", verso: "Para a pessoa <b>maior de 70 anos</b>. Objetivo: proteger o patrimônio e evitar o \"golpe do baú\".", dica: "O CC de 1916 exigia para mulher +50 e homem +60." },
+    { id: "u2-47", unidade: 2, frente: "A separação obrigatória aos 70 torna a pessoa idosa incapaz?", verso: "<b>Não.</b> A pessoa idosa continua capaz; discute-se inclusive a inconstitucionalidade da regra diante da igualdade (CF art. 5º) e da dignidade (EPI arts. 2º e 10)." }
   ],
   quiz: [
     {
@@ -141,6 +204,69 @@ window.MEMORA.add({
       opcoes: ["Educação", "Saúde", "Propriedade", "Moradia", "Lazer"],
       correta: 2,
       explicacao: "Propriedade é direito do art. 5º (fundamentais). Os sociais do art. 6º incluem educação, saúde, trabalho, moradia, lazer e segurança."
+    },
+
+    // ===== UNIDADE II =====
+    {
+      id: "q9", unidade: 2,
+      pergunta: "Sobre vulnerabilidade e consumo, assinale a alternativa <b>CORRETA</b>:",
+      opcoes: [
+        "A hipervulnerabilidade se refere apenas às condições financeiras.",
+        "A pessoa idosa, por ser vulnerável, precisa ser protegida de forma diferenciada.",
+        "O CDC considera apenas a pessoa idosa como vulnerável no consumo.",
+        "O direito do consumidor não é direito fundamental.",
+        "Enviar cartão de crédito não solicitado à pessoa idosa não gera dano moral."
+      ],
+      correta: 1,
+      explicacao: "A vulnerabilidade justifica a proteção diferenciada. O direito do consumidor é fundamental (art. 5º, XXXII) e o cartão não solicitado é prática abusiva que gera dano moral."
+    },
+    {
+      id: "q10", unidade: 2,
+      pergunta: "Sobre crimes envolvendo a pessoa idosa, assinale a <b>INCORRETA</b>:",
+      opcoes: [
+        "A família é a base da sociedade e tem proteção especial do Estado.",
+        "Não há crime sem lei anterior que o defina, nem pena sem prévia cominação legal.",
+        "É crime discriminar a pessoa idosa dificultando seu acesso a operações bancárias.",
+        "É atenuante de pena o agente ser maior de 70 anos na época dos fatos.",
+        "É atenuante de pena o agente ser maior de 60 anos na época dos fatos."
+      ],
+      correta: 4,
+      explicacao: "A atenuante (CP, art. 65, I) é para o maior de 70 anos, não de 60."
+    },
+    {
+      id: "q11", unidade: 2,
+      pergunta: "Qual destes NÃO é requisito de <b>validade</b> do negócio jurídico (art. 104 do CC)?",
+      opcoes: ["Capacidade do agente", "Objeto lícito e possível", "Forma prescrita ou não defesa em lei", "Finalidade negocial"],
+      correta: 3,
+      explicacao: "Finalidade negocial é requisito de EXISTÊNCIA. A validade exige capacidade, objeto lícito e forma adequada."
+    },
+    {
+      id: "q12", unidade: 2,
+      pergunta: "O regime da separação de bens é obrigatório no casamento da pessoa:",
+      opcoes: ["Maior de 60 anos", "Maior de 65 anos", "Maior de 70 anos", "Maior de 80 anos", "De qualquer idade, se tiver patrimônio"],
+      correta: 2,
+      explicacao: "Art. 1.641, II do CC: obrigatório para o maior de 70 anos (evitar o golpe do baú)."
+    },
+    {
+      id: "q13", unidade: 2,
+      pergunta: "A pena do estelionato (art. 171 do CP) cometido contra a pessoa idosa é:",
+      opcoes: ["Reduzida pela metade", "Aplicada em dobro", "Substituída por multa", "A mesma da regra geral", "Convertida em detenção"],
+      correta: 1,
+      explicacao: "Art. 171, § 4º: a pena é aplicada em dobro quando o crime é contra a pessoa idosa."
+    },
+    {
+      id: "q14", unidade: 2,
+      pergunta: "O elemento do negócio jurídico que subordina seus efeitos a evento <b>futuro e incerto</b> é:",
+      opcoes: ["O termo", "A condição", "O encargo", "A coação"],
+      correta: 1,
+      explicacao: "Condição = evento futuro e INCERTO (art. 121). Termo = evento futuro e CERTO (art. 132)."
+    },
+    {
+      id: "q15", unidade: 2,
+      pergunta: "A Política Nacional do Idoso foi instituída pela:",
+      opcoes: ["Lei 8.078/1990", "Lei 10.741/2003", "Lei 8.842/1994", "Lei 8.069/1990"],
+      correta: 2,
+      explicacao: "Lei 8.842, de 4 de janeiro de 1994. A 8.078/1990 é o CDC e a 10.741/2003 é o Estatuto da Pessoa Idosa."
     }
   ]
 });

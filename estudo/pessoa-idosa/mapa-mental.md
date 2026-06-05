@@ -53,3 +53,53 @@ mindmap
       SUS 1996 e 2013
       Idosos mais 103 e OMS 2030 70
 ```
+
+## Unidade II
+
+```mermaid
+mindmap
+  root((Pessoa Idosa Unidade II))
+    Vulnerabilidade
+      Tratamento diferenciado
+      CF art 7 sem distincao por idade
+      CF art 229 filhos amparam pais
+      CF art 230 amparo e 65 transporte
+      Politica Nacional Lei 8842 1994
+    Consumo
+      Defesa do consumidor fundamental art 5 XXXII
+      CDC Lei 8078 1990
+      Vulnerabilidade tecnica socioeconomica juridica
+      CDC art 39 IV nao se prevalecer da fraqueza
+      Hipervulnerabilidade idosos criancas enfermos
+      Cartao nao solicitado dano moral
+      Solidao como 15 cigarros
+    Familia e alimentos
+      CF art 226 base da sociedade
+      Amar e faculdade cuidar e dever
+      EPI art 4 sem violencia
+      Alimentos solidarios EPI 11 12 14
+      CC 1694 a 1697 ordem dos alimentos
+    Indenizar
+      Ato ilicito art 186
+      Abuso de direito art 187
+      Reparar dano art 927
+    Crimes
+      Legalidade CF art 5 XXXIX
+      Estelionato art 171 dobro contra idoso
+      Abandono material art 244 maior de 60
+      Estatuto arts 95 a 108
+      Pelo idoso atenuante e prescricao aos 70
+    Negocio juridico
+      Autonomia e autonomia privada
+      Existencia vontade finalidade objeto
+      Validade art 104 capacidade objeto forma
+      Condicao incerto art 121
+      Termo certo art 132
+      Encargo onus art 136
+      Vicios erro dolo coacao perigo lesao e fraude
+    Casamento
+      Art 1517 casar aos 16 com autorizacao
+      Art 1640 sem pacto comunhao parcial
+      Art 1641 II separacao obrigatoria aos 70
+      Golpe do bau e debate de inconstitucionalidade
+```
