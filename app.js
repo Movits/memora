@@ -71,14 +71,17 @@
     deck.cards.forEach(function (c) { if (cardState(state, c.id).due <= now) n++; });
     return n;
   }
-  function masteredCount(deck, unidade) {
-    var state = loadState(deck.id), n = 0, total = 0;
+  // Progresso gradual (0 a 100): cada acerto já enche um pedaço da barra.
+  // caixa 1 = 0%, caixa 2 ~ 33%, caixa 3 ~ 67%, caixa 4+ = 100%.
+  function progresso(deck, unidade) {
+    var state = loadState(deck.id), soma = 0, total = 0;
     deck.cards.forEach(function (c) {
       if (unidade != null && c.unidade !== unidade) return;
       total++;
-      if (cardState(state, c.id).box >= DOMINADO) n++;
+      var p = (cardState(state, c.id).box - 1) / (DOMINADO - 1);
+      soma += p < 0 ? 0 : (p > 1 ? 1 : p);
     });
-    return { mastered: n, total: total };
+    return total ? Math.round(100 * soma / total) : 0;
   }
 
   // ---- Utilidades ----
@@ -190,13 +193,13 @@
     app.appendChild(agenda);
 
     // Lista de matérias
-    app.appendChild(el("h2", { text: "Matérias", style: "margin:18px 0 10px" }));
+    app.appendChild(el("h2", { text: "Matérias", style: "margin:18px 0 6px" }));
+    app.appendChild(el("p", { class: "sub", style: "margin:0 0 12px;font-size:13px", text: "Novas matérias são criadas a partir do material que você me envia." }));
     DECKS.forEach(function (deck) {
-      var m = masteredCount(deck);
-      var pct = m.total ? Math.round(100 * m.mastered / m.total) : 0;
+      var pct = progresso(deck);
       var due = dueCount(deck);
       var iso = getProva(deck);
-      var bar = el("div", { class: "bar" }, [el("i")]);
+      var bar = el("div", { class: "bar" }, [el("i", { style: "width:" + pct + "%" })]);
       var card = el("div", { class: "deck-card", onclick: function () { navigate(function () { renderDeck(deck); }); } }, [
         el("div", { class: "deck-title" }, [
           el("h2", { text: deck.titulo }),
@@ -204,13 +207,12 @@
         ]),
         el("div", { class: "meta-row" }, [
           el("span", { text: "🃏 " + deck.cards.length + " cartões" }),
-          el("span", { text: "✅ " + pct + "% dominado" }),
+          el("span", { text: "📊 " + pct + "% estudado" }),
           iso ? el("span", { text: "📅 prova " + labelDias(iso) }) : null
         ]),
         bar
       ]);
       app.appendChild(card);
-      requestAnimationFrame(function () { bar.firstChild.style.width = pct + "%"; });
     });
   }
 
@@ -313,13 +315,12 @@
 
     var panel = el("div", { class: "panel" }, [el("h2", { text: "Unidades" })]);
     unidades(deck).forEach(function (u) {
-      var m = masteredCount(deck, u);
-      var pct = m.total ? Math.round(100 * m.mastered / m.total) : 0;
-      var bar = el("div", { class: "bar" }, [el("i")]);
+      var pct = progresso(deck, u);
+      var bar = el("div", { class: "bar" }, [el("i", { style: "width:" + pct + "%" })]);
       panel.appendChild(el("div", { class: "unit" }, [
         el("div", { class: "unit-head" }, [
           el("span", { class: "unit-name", text: nomeUnidade(deck, u) }),
-          el("span", { class: "unit-count", text: m.mastered + "/" + m.total })
+          el("span", { class: "unit-count", text: pct + "%" })
         ]),
         bar,
         el("div", { class: "btn-row" }, [
@@ -328,7 +329,6 @@
             ? el("button", { class: "action small secondary", text: "Quiz", onclick: function () { startQuiz(buildQuiz([deck], { unidade: u }), { label: "Quiz", multi: false }); } }) : null
         ])
       ]));
-      requestAnimationFrame(function () { bar.firstChild.style.width = pct + "%"; });
     });
     app.appendChild(panel);
 
