@@ -1,7 +1,7 @@
 /* Service worker do Memora.
    Estratégia: network-first para manter o conteúdo fresco quando online,
    com fallback para o cache quando offline. */
-var CACHE = "memora-v11";
+var CACHE = "memora-v12";
 var SHELL = [
   "./",
   "index.html",
@@ -13,6 +13,7 @@ var SHELL = [
   "decks/teorias-ri.js",
   "decks/teorias-contemporaneas-ri.js",
   "decks/diplomacia-ri.js",
+  "decks/formacao-economica.js",
   "icons/icon.svg",
   "icons/icon-192.png",
   "icons/icon-512.png"
