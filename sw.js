@@ -1,7 +1,7 @@
 /* Service worker do Memora.
    Estratégia: network-first para manter o conteúdo fresco quando online,
    com fallback para o cache quando offline. */
-var CACHE = "memora-v9";
+var CACHE = "memora-v10";
 var SHELL = [
   "./",
   "index.html",

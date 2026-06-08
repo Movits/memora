@@ -6,7 +6,7 @@
 window.MEMORA.add({
   id: "teorias-ri",
   titulo: "Teorias das RI",
-  prova: null,
+  prova: "2026-06-11",
   unidades: {
     1: "Unidade I · Teorias clássicas",
     2: "Unidade II · Neo-neo",

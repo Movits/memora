@@ -6,7 +6,7 @@
 window.MEMORA.add({
   id: "teorias-contemporaneas-ri",
   titulo: "Teorias Contemporâneas das RI",
-  prova: null,
+  prova: "2026-06-11",
   unidades: {
     1: "Unidade I · Pós-positivismo, crítica, construtivismo",
     2: "Unidade II · Pós-colonial e feminismo",

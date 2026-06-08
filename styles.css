@@ -114,6 +114,20 @@ h2 { font-size: 20px; margin: 0 0 6px; }
 
 .deck-card { cursor: pointer; transition: transform .12s ease, border-color .12s ease; }
 .deck-card:hover { transform: translateY(-2px); border-color: var(--brand); }
+.deck-card.dragging { opacity: .5; border-style: dashed; }
+
+/* Controles de ordenar/ocultar matéria */
+.deck-controls { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.drag-handle { color: var(--muted); font-size: 12px; cursor: grab; margin-right: auto; user-select: none; }
+.ctl { width: 34px; height: 30px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 8px; font-size: 13px; cursor: pointer; }
+.ctl:hover { border-color: var(--brand); }
+.ctl.danger:hover { border-color: var(--bad); }
+
+/* Matérias ocultas */
+.hidden-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.hidden-item:first-of-type { border-top: 0; }
+.hidden-name { color: var(--muted); }
+.hidden-acts { display: flex; gap: 8px; }
 
 .deck-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pill {

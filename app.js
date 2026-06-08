@@ -57,13 +57,13 @@
   }
   function provasPorDia() {
     var map = {};
-    DECKS.forEach(function (d) {
+    visibleDecks().forEach(function (d) {
       var iso = getProva(d);
       if (iso) (map[iso] = map[iso] || []).push(d);
     });
     return map;
   }
-  function decksDoDia(iso) { return DECKS.filter(function (d) { return getProva(d) === iso; }); }
+  function decksDoDia(iso) { return visibleDecks().filter(function (d) { return getProva(d) === iso; }); }
 
   // ---- Estatísticas ----
   function dueCount(deck) {
@@ -152,6 +152,53 @@
   btnHome.addEventListener("click", function () { stack = [renderHome]; show(renderHome); });
   btnBack.addEventListener("click", back);
 
+  // ---- Ordem, ocultar e apagar matérias ----
+  var dragId = null;
+  function loadList(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }
+  function saveList(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {} }
+  function hiddenIds() { return loadList("memora.ocultas"); }
+  function deletedIds() { return loadList("memora.apagadas"); }
+  function isHidden(id) { return hiddenIds().indexOf(id) !== -1; }
+  function activeDecks() {
+    var del = deletedIds();
+    return DECKS.filter(function (d) { return del.indexOf(d.id) === -1; });
+  }
+  function orderedDecks() {
+    var ordem = loadList("memora.ordem"), active = activeDecks(), byId = {}, out = [];
+    active.forEach(function (d) { byId[d.id] = d; });
+    ordem.forEach(function (id) { if (byId[id]) { out.push(byId[id]); delete byId[id]; } });
+    active.forEach(function (d) { if (byId[d.id]) out.push(d); });
+    return out;
+  }
+  function visibleDecks() { return orderedDecks().filter(function (d) { return !isHidden(d.id); }); }
+  function moveDeck(id, dir) {
+    var ids = orderedDecks().map(function (d) { return d.id; });
+    var i = ids.indexOf(id), j = i + dir;
+    if (i < 0 || j < 0 || j >= ids.length) return;
+    var t = ids[i]; ids[i] = ids[j]; ids[j] = t;
+    saveList("memora.ordem", ids); refresh();
+  }
+  function reorderDeck(fromId, toId) {
+    if (!fromId || fromId === toId) return;
+    var ids = orderedDecks().map(function (d) { return d.id; }).filter(function (x) { return x !== fromId; });
+    var to = ids.indexOf(toId);
+    if (to < 0) ids.push(fromId); else ids.splice(to, 0, fromId);
+    saveList("memora.ordem", ids); refresh();
+  }
+  function ocultarDeck(id) {
+    var h = hiddenIds(); if (h.indexOf(id) === -1) h.push(id); saveList("memora.ocultas", h); refresh();
+  }
+  function restaurarDeck(id) {
+    saveList("memora.ocultas", hiddenIds().filter(function (x) { return x !== id; })); refresh();
+  }
+  function apagarDeck(id) {
+    var del = deletedIds(); if (del.indexOf(id) === -1) del.push(id); saveList("memora.apagadas", del);
+    saveList("memora.ocultas", hiddenIds().filter(function (x) { return x !== id; }));
+    saveList("memora.ordem", loadList("memora.ordem").filter(function (x) { return x !== id; }));
+    try { localStorage.removeItem(stateKey(id)); } catch (e) {}
+    refresh();
+  }
+
   // ---- Tela inicial ----
   function renderHome() {
     if (!DECKS.length) {
@@ -194,13 +241,20 @@
 
     // Lista de matérias
     app.appendChild(el("h2", { text: "Matérias", style: "margin:18px 0 6px" }));
-    app.appendChild(el("p", { class: "sub", style: "margin:0 0 12px;font-size:13px", text: "Novas matérias são criadas a partir do material que você me envia." }));
-    DECKS.forEach(function (deck) {
+    app.appendChild(el("p", { class: "sub", style: "margin:0 0 12px;font-size:13px", text: "Arraste ou use ▲▼ para ordenar pela ordem das suas provas. O 🗑 oculta a matéria." }));
+    visibleDecks().forEach(function (deck) {
       var pct = progresso(deck);
       var due = dueCount(deck);
       var iso = getProva(deck);
       var bar = el("div", { class: "bar" }, [el("i", { style: "width:" + pct + "%" })]);
-      var card = el("div", { class: "deck-card", onclick: function () { navigate(function () { renderDeck(deck); }); } }, [
+      var card = el("div", {
+        class: "deck-card", draggable: "true",
+        onclick: function () { navigate(function () { renderDeck(deck); }); },
+        ondragstart: function (e) { dragId = deck.id; if (e.dataTransfer) e.dataTransfer.effectAllowed = "move"; card.classList.add("dragging"); },
+        ondragend: function () { card.classList.remove("dragging"); },
+        ondragover: function (e) { e.preventDefault(); },
+        ondrop: function (e) { e.preventDefault(); reorderDeck(dragId, deck.id); }
+      }, [
         el("div", { class: "deck-title" }, [
           el("h2", { text: deck.titulo }),
           el("span", { class: "pill " + (due ? "due" : "zero"), text: due ? (due + " p/ revisar") : "em dia ✓" })
@@ -210,10 +264,32 @@
           el("span", { text: "📊 " + pct + "% dominado" }),
           iso ? el("span", { text: "📅 prova " + labelDias(iso) }) : null
         ]),
-        bar
+        bar,
+        el("div", { class: "deck-controls" }, [
+          el("span", { class: "drag-handle", title: "Arraste para reordenar", text: "⠿ arraste" }),
+          el("button", { class: "ctl", title: "Subir", text: "▲", onclick: function (e) { e.stopPropagation(); moveDeck(deck.id, -1); } }),
+          el("button", { class: "ctl", title: "Descer", text: "▼", onclick: function (e) { e.stopPropagation(); moveDeck(deck.id, 1); } }),
+          el("button", { class: "ctl danger", title: "Ocultar matéria", text: "🗑", onclick: function (e) { e.stopPropagation(); ocultarDeck(deck.id); } })
+        ])
       ]);
       app.appendChild(card);
     });
+
+    // Matérias ocultas
+    var hidden = activeDecks().filter(function (d) { return isHidden(d.id); });
+    if (hidden.length) {
+      var hp = el("div", { class: "panel", style: "margin-top:18px" }, [el("h2", { text: "🗂️ Matérias ocultas" })]);
+      hidden.forEach(function (deck) {
+        hp.appendChild(el("div", { class: "hidden-item" }, [
+          el("span", { class: "hidden-name", text: deck.titulo }),
+          el("div", { class: "hidden-acts" }, [
+            el("button", { class: "action small secondary", text: "Restaurar", onclick: function () { restaurarDeck(deck.id); } }),
+            el("button", { class: "action small", style: "background:var(--bad)", text: "Apagar de vez", onclick: function () { if (confirm("Apagar \"" + deck.titulo + "\" definitivamente? Remove a matéria e o progresso, sem desfazer.")) apagarDeck(deck.id); } })
+          ])
+        ]));
+      });
+      app.appendChild(hp);
+    }
   }
 
   // ---- Calendário ----
