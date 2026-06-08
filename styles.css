@@ -216,6 +216,13 @@ button.link { background: none; border: 0; color: var(--muted); cursor: pointer;
 /* Quiz tag */
 .qtag { color: var(--brand); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
 
+/* Legenda explicativa */
+.legenda { font-size: 13px; color: var(--muted); background: rgba(139,108,240,.10); border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; margin: 4px 0 16px; line-height: 1.55; }
+.legenda b { color: var(--text); }
+
+/* Indicador de domínio no cartão */
+.nivel { font-size: 14px; color: var(--brand); letter-spacing: 4px; margin-bottom: 14px; }
+
 /* Editor de data da prova */
 .daterow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 16px; color: var(--muted); font-size: 14px; }
 .daterow input[type="date"] {

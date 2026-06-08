@@ -207,7 +207,7 @@
         ]),
         el("div", { class: "meta-row" }, [
           el("span", { text: "🃏 " + deck.cards.length + " cartões" }),
-          el("span", { text: "📊 " + pct + "% estudado" }),
+          el("span", { text: "📊 " + pct + "% dominado" }),
           iso ? el("span", { text: "📅 prova " + labelDias(iso) }) : null
         ]),
         bar
@@ -313,7 +313,10 @@
       (deck.quiz && deck.quiz.length) ? el("button", { class: "action secondary", text: "📝 Quiz", onclick: function () { startQuiz(buildQuiz([deck], {}), { label: "Quiz", multi: false }); } }) : null
     ]));
 
-    var panel = el("div", { class: "panel" }, [el("h2", { text: "Unidades" })]);
+    var panel = el("div", { class: "panel" }, [
+      el("h2", { text: "Unidades" }),
+      el("p", { class: "legenda", html: "💡 A barra mostra o <b>domínio</b>, não a conclusão. Cada acerto sobe o cartão um nível: <b>1 acerto ≈ 33%</b>, 2 ≈ 67%, 3 = dominado (100%). Por isso cada passada completa sobe cerca de 33%. Reveja em <b>dias diferentes</b> para chegar aos 100% (é a repetição espaçada que fixa de verdade)." })
+    ]);
     unidades(deck).forEach(function (u) {
       var pct = progresso(deck, u);
       var bar = el("div", { class: "bar" }, [el("i", { style: "width:" + pct + "%" })]);
@@ -372,7 +375,12 @@
   }
   function studyDeck(deck, opts) {
     var label = (opts.mode === "retafinal" ? "Reta final" : "Revisão") + (opts.unidade != null ? " · " + nomeUnidade(deck, opts.unidade) : "");
-    startSession(buildItems([deck], opts), { label: label, multi: false });
+    startSession(buildItems([deck], opts), { label: label, multi: false, deck: deck, unidade: opts.unidade });
+  }
+  function dotsDominio(box) {
+    var f = Math.min(Math.max(box - 1, 0), 3), s = "";
+    for (var i = 0; i < 3; i++) s += (i < f ? "●" : "○");
+    return s;
   }
 
   // ---- Sessão de estudo (flashcards) ----
@@ -392,6 +400,7 @@
     var queue = shuffle(items);
     var total = queue.length;
     var revealed = false, done = false;
+    var antes = opts.deck ? progresso(opts.deck, opts.unidade) : null;
 
     function answer(result) {
       var it = queue[0];
@@ -404,10 +413,13 @@
     }
     function renderCurrent() {
       if (done) {
+        var depois = opts.deck ? progresso(opts.deck, opts.unidade) : null;
         app.appendChild(el("div", { class: "empty" }, [
           el("span", { class: "emoji", text: "✅" }),
           el("h2", { text: "Sessão concluída!" }),
           el("p", { class: "sub", text: "Você revisou " + total + (total === 1 ? " cartão." : " cartões.") }),
+          antes != null ? el("p", { class: "sub", html: "Domínio: <b>" + antes + "%</b> → <b>" + depois + "%</b>" }) : null,
+          antes != null && depois < 100 ? el("p", { class: "sub", style: "font-size:13px", text: "Reveja em outro dia para o domínio continuar subindo." }) : null,
           el("div", { class: "btn-row" }, [el("button", { class: "action", text: "Voltar", onclick: back })])
         ]));
         return;
@@ -418,8 +430,10 @@
         el("span", { text: "Faltam " + queue.length })
       ]));
       var tag = (multi ? deck.titulo + " · " : "") + nomeUnidade(deck, card.unidade);
+      var box = cardState(loadState(deck.id), card.id).box;
       var fc = el("div", { class: "flashcard" }, [
         el("div", { class: "tag", text: tag }),
+        el("div", { class: "nivel", title: "Domínio do cartão (acertos em sessões diferentes)", text: dotsDominio(box) }),
         el("div", { class: "front", html: card.frente })
       ]);
       if (revealed) {
