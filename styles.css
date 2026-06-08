@@ -223,6 +223,38 @@ button.link { background: none; border: 0; color: var(--muted); cursor: pointer;
 /* Indicador de domínio no cartão */
 .nivel { font-size: 14px; color: var(--brand); letter-spacing: 4px; margin-bottom: 14px; }
 
+/* Lista de material de estudo */
+.material-item {
+  display: block; width: 100%; text-align: left;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 12px; padding: 13px 15px; margin-bottom: 9px; font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.material-item:hover { border-color: var(--brand); }
+.material-item::before { content: "📄 "; }
+
+/* Leitor de material (resumos, mnemônicos, etc.) */
+.doc {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 20px 8px;
+  box-shadow: var(--shadow); line-height: 1.6; font-size: 15px; color: #e7e3f7;
+}
+.doc h2 { font-size: 19px; margin: 22px 0 8px; color: var(--text); }
+.doc h2:first-child { margin-top: 4px; }
+.doc h3 { font-size: 16px; margin: 18px 0 6px; color: var(--brand); }
+.doc p { margin: 8px 0; }
+.doc ul, .doc ol { margin: 8px 0; padding-left: 22px; }
+.doc li { margin: 5px 0; }
+.doc b, .doc strong { color: #fff; }
+.doc code { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 13px; }
+.doc table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+.doc th, .doc td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+.doc th { background: var(--surface-2); }
+/* Mapa em tópicos (esquema recuado) */
+.doc .mapa { list-style: none; padding-left: 0; }
+.doc .mapa ul { list-style: none; border-left: 2px solid var(--brand-2); margin-left: 8px; padding-left: 14px; }
+.doc .mapa > li { font-weight: 700; margin-top: 10px; }
+.doc .mapa li li { font-weight: 400; }
+
 /* Editor de data da prova */
 .daterow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 16px; color: var(--muted); font-size: 14px; }
 .daterow input[type="date"] {

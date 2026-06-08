@@ -320,20 +320,33 @@
     unidades(deck).forEach(function (u) {
       var pct = progresso(deck, u);
       var bar = el("div", { class: "bar" }, [el("i", { style: "width:" + pct + "%" })]);
+      var btns = [
+        el("button", { class: "action small secondary", text: "Estudar unidade", onclick: function () { studyDeck(deck, { mode: "retafinal", unidade: u }); } })
+      ];
+      if (deck.quiz && deck.quiz.some(function (q) { return q.unidade === u; })) {
+        btns.push(el("button", { class: "action small secondary", text: "📝 Quiz", onclick: function () { startQuiz(buildQuiz([deck], { unidade: u }), { label: "Quiz", multi: false }); } }));
+      }
+      (deck.material || []).filter(function (p) { return p.unidade === u; }).forEach(function (p) {
+        btns.push(el("button", { class: "action small secondary", text: "📖 " + (p.aba || "Resumo"), onclick: function () { renderMaterial(p); } }));
+      });
       panel.appendChild(el("div", { class: "unit" }, [
         el("div", { class: "unit-head" }, [
           el("span", { class: "unit-name", text: nomeUnidade(deck, u) }),
           el("span", { class: "unit-count", text: pct + "%" })
         ]),
         bar,
-        el("div", { class: "btn-row" }, [
-          el("button", { class: "action small secondary", text: "Estudar unidade", onclick: function () { studyDeck(deck, { mode: "retafinal", unidade: u }); } }),
-          (deck.quiz && deck.quiz.some(function (q) { return q.unidade === u; }))
-            ? el("button", { class: "action small secondary", text: "Quiz", onclick: function () { startQuiz(buildQuiz([deck], { unidade: u }), { label: "Quiz", multi: false }); } }) : null
-        ])
+        el("div", { class: "btn-row" }, btns)
       ]));
     });
     app.appendChild(panel);
+
+    if (deck.material && deck.material.length) {
+      var mp = el("div", { class: "panel" }, [el("h2", { text: "📖 Material de estudo" })]);
+      deck.material.forEach(function (p) {
+        mp.appendChild(el("button", { class: "material-item", text: p.titulo, onclick: function () { renderMaterial(p); } }));
+      });
+      app.appendChild(mp);
+    }
 
     app.appendChild(el("div", { class: "center" }, [
       el("button", {
@@ -346,6 +359,15 @@
         }
       })
     ]));
+  }
+
+  // ---- Leitor de material de estudo ----
+  function renderMaterial(page) {
+    navigate(function () {
+      app.appendChild(el("h1", { text: page.titulo }));
+      app.appendChild(el("div", { class: "doc", html: page.html }));
+      app.appendChild(el("div", { class: "btn-row" }, [el("button", { class: "action", text: "‹ Voltar", onclick: back })]));
+    });
   }
 
   // ---- Montagem de itens ----
@@ -459,13 +481,24 @@
     navigate(renderCurrent);
   }
 
-  // ---- Quiz ----
-  function startQuiz(items, opts) {
+  // ---- Quiz (sorteia um subconjunto; permite refazer com outras questões) ----
+  var QUIZ_SIZE = 10;
+  function pickQuiz(pool, exclude) {
+    exclude = exclude || [];
+    var avail = pool.filter(function (it) { return exclude.indexOf(it.q.id) === -1; });
+    if (avail.length < QUIZ_SIZE) avail = pool;
+    return shuffle(avail).slice(0, Math.min(QUIZ_SIZE, pool.length));
+  }
+  function startQuiz(pool, opts) {
     opts = opts || {};
-    if (!items.length) { back(); return; }
+    if (!pool.length) { back(); return; }
     var multi = !!opts.multi;
-    var qs = shuffle(items), i = 0, score = 0, answered = false, chosen = -1, done = false;
-
+    var qs = [], sessionIds = [], i = 0, score = 0, answered = false, chosen = -1, done = false;
+    function loadSet(exclude) {
+      qs = pickQuiz(pool, exclude);
+      sessionIds = qs.map(function (it) { return it.q.id; });
+      i = 0; score = 0; answered = false; chosen = -1; done = false;
+    }
     function choose(idx) { if (answered) return; answered = true; chosen = idx; if (idx === qs[i].q.correta) score++; refresh(); }
     function nextQ() { i++; answered = false; chosen = -1; if (i >= qs.length) done = true; refresh(); }
     function renderCurrent() {
@@ -476,7 +509,12 @@
           el("h2", { text: "Resultado" }),
           el("div", { class: "big-num", text: score + " / " + qs.length }),
           el("p", { class: "sub", text: pct + "% de acerto" }),
-          el("div", { class: "btn-row" }, [el("button", { class: "action", text: "Voltar", onclick: back })])
+          el("div", { class: "btn-row" }, [
+            pool.length > qs.length
+              ? el("button", { class: "action", text: "🔄 Refazer com outras questões", onclick: function () { loadSet(sessionIds); refresh(); } })
+              : el("button", { class: "action", text: "🔄 Refazer", onclick: function () { loadSet([]); refresh(); } }),
+            el("button", { class: "action secondary", text: "Voltar", onclick: back })
+          ])
         ]));
         return;
       }
@@ -503,6 +541,7 @@
         ]));
       }
     }
+    loadSet(opts.exclude);
     navigate(renderCurrent);
   }
 

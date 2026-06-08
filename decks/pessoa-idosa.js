@@ -10,6 +10,207 @@ window.MEMORA.add({
     1: "Unidade I",
     2: "Unidade II"
   },
+  material: [
+    {
+      id: "res-u1", titulo: "Resumo · Unidade I", unidade: 1, aba: "Resumo",
+      html: `
+<h3>1. Direito público x privado</h3>
+<ul>
+<li>Critério: presença ou não do <b>Estado</b>. Divisão do Direito Romano, didática.</li>
+<li><b>Público</b> (pessoa + Estado): Constitucional, Penal, Tributário.</li>
+<li><b>Privado</b> (entre particulares): Civil, Consumidor, Trabalho.</li>
+</ul>
+<h3>2. Personalidade</h3>
+<ul>
+<li><b>Art. 1º CC</b>: toda pessoa é capaz de direitos e deveres na ordem civil.</li>
+<li><b>Início (art. 2º)</b>: nascimento com vida; o <b>nascituro</b> é protegido desde a concepção.</li>
+<li><b>Fim (art. 6º)</b>: a morte. Real = encefálica; presumida = com ou sem ausência.</li>
+</ul>
+<h3>3. Capacidade e incapacidade</h3>
+<ul>
+<li><b>De direito</b>: todos têm. <b>De fato</b>: nem todos. Capacidade é a regra.</li>
+<li><b>Absolutamente incapaz (art. 3º)</b>: menor de 16 anos.</li>
+<li><b>Relativamente incapaz (art. 4º)</b>: de 16 a 18; ébrios habituais e viciados; quem não exprime a vontade; pródigos.</li>
+<li><b>Fim (art. 5º)</b>: maioridade aos 18; emancipação.</li>
+</ul>
+<h3>4. Interdição</h3>
+<ul>
+<li>Curatela (art. 1.767 CC). Requerem (CPC 747 e 748): cônjuge ou companheiro, pais ou tutores, entidade e o Ministério Público.</li>
+<li>Laudo médico (CPC 750), entrevista com o juiz (CPC 751), juiz nomeia curador e limites (CPC 755).</li>
+</ul>
+<h3>5. Estatuto da Pessoa Idosa (Lei 10.741/2003)</h3>
+<ul>
+<li>Protege quem tem <b>60 anos ou mais</b> (art. 1º).</li>
+<li><b>Art. 8º</b>: envelhecimento = direito personalíssimo; proteção = direito social.</li>
+<li>Cultura e lazer: desconto de <b>50%</b> (art. 23). Transporte grátis aos <b>65</b> (art. 39), com 10% dos assentos reservados.</li>
+<li>Prioridade (art. 3º); <b>prioridade especial aos 80</b>.</li>
+<li>A pessoa idosa <b>não é incapaz</b> e escolhe o próprio tratamento (art. 17 do EPI; art. 15 do CC).</li>
+</ul>
+<h3>Idades que mais caem</h3>
+<p>16 (incapaz absoluto) · 18 (maioridade) · 60 (idoso) · 65 (transporte grátis) · 80 (prioridade especial).</p>
+<h3>6. Constituição</h3>
+<ul>
+<li><b>Art. 5º</b>: direitos fundamentais (vida, liberdade, igualdade, segurança, propriedade).</li>
+<li><b>Art. 6º</b>: direitos sociais (educação, saúde, trabalho, moradia, lazer, segurança).</li>
+</ul>
+<h3>7. Envelhecimento e saúde</h3>
+<ul>
+<li><b>Gerontofobia</b>: aversão à velhice. <b>Envelhecimento ativo (OMS)</b>: saúde, participação e segurança.</li>
+<li><b>75%</b> das lesões em maiores de 60 vêm de acidentes domésticos. OMS: em 2050, 1/5 do mundo será idoso.</li>
+<li>IBGE (2019): mulher 80 anos, homem 73 (genética XX, estrogênio, comportamento).</li>
+</ul>
+<h3>8. Gerontologia x Geriatria</h3>
+<ul>
+<li><b>Gerontologia</b>: ciência multidisciplinar do envelhecimento.</li>
+<li><b>Geriatria</b>: ramo da Medicina das doenças da velhice.</li>
+</ul>
+<h3>9. HIV / Aids</h3>
+<ul>
+<li>1981 primeiros casos; 1983 HIV-1; 1986 HIV-2. Transmissão: sexual, sanguínea e perinatal.</li>
+<li>Fases: aguda (3 a 6 semanas) → assintomática → sintomática inicial → oportunistas.</li>
+<li>SUS: antirretroviral desde 1996; tratamento universal desde 2013. Cerca de 866 mil no Brasil.</li>
+<li>Idosos: +103% na última década; OMS projeta 70% dos idosos com HIV em 2030.</li>
+</ul>`
+    },
+    {
+      id: "res-u2", titulo: "Resumo · Unidade II", unidade: 2, aba: "Resumo",
+      html: `
+<h3>1. Vulnerabilidade</h3>
+<ul>
+<li>Fragilidade; possibilidade de ser ferido ou adoecer. A pessoa idosa merece proteção diferenciada.</li>
+<li><b>CF art. 7º, XXX</b>: proíbe diferença por idade. <b>Art. 229</b>: filhos amparam os pais na velhice. <b>Art. 230</b>: família, sociedade e Estado amparam; 65+ transporte grátis.</li>
+<li><b>Política Nacional do Idoso: Lei 8.842/1994</b>.</li>
+</ul>
+<h3>2. Consumo e hipervulnerabilidade</h3>
+<ul>
+<li>Defesa do consumidor é direito fundamental (CF art. 5º, XXXII). <b>CDC: Lei 8.078/1990</b>.</li>
+<li>Vulnerabilidade: <b>técnica</b>, <b>socioeconômica</b>, <b>jurídica</b> (art. 4º, I).</li>
+<li><b>Art. 39, IV</b>: vedado prevalecer-se da fraqueza do consumidor.</li>
+<li><b>Hipervulneráveis</b>: idosos, crianças, enfermos (REsp 931.513-RS, Herman Benjamin).</li>
+<li>Cartão de crédito não solicitado = prática abusiva e dano moral (STJ, REsp 1.061.500-RS).</li>
+<li>Solidão: faz o mal de fumar 15 cigarros por dia.</li>
+</ul>
+<h3>3. Família e alimentos</h3>
+<ul>
+<li><b>CF art. 226</b>: família é a base da sociedade. "Amar é faculdade, cuidar é dever" (REsp 1.159.242-SP, Nancy Andrighi).</li>
+<li><b>EPI art. 4º</b>: sem negligência/violência. <b>Arts. 11, 12, 14</b>: alimentos solidários; o idoso opta entre os prestadores; o Poder Público provê se a família não puder.</li>
+<li>CC: 1.694 (quem pode pedir), 1.695 (quando devidos), 1.696 (recíproco pais e filhos), 1.697 (faltando ascendentes, descendentes e depois irmãos).</li>
+</ul>
+<h3>4. Obrigação de indenizar</h3>
+<ul><li>Ato ilícito (art. 186); abuso de direito (art. 187); dever de reparar (art. 927).</li></ul>
+<h3>5. Crimes</h3>
+<ul>
+<li><b>CF art. 5º, XXXIX</b>: não há crime sem lei anterior (legalidade).</li>
+<li><b>CP art. 171 (estelionato)</b>: pena em <b>dobro</b> se contra idoso. <b>Art. 244</b> (abandono material): ascendente maior de 60.</li>
+<li><b>Estatuto, arts. 95 a 108</b>: art. 96 (discriminação, +1/3 se sob cuidados), 97 (não prestar assistência), 98 (abandono), 99 (expor a perigo).</li>
+<li><b>Pela pessoa idosa</b>: atenuante e prescrição pela metade se <b>maior de 70</b> (CP 65, I e 115).</li>
+</ul>
+<h3>6. Negócio jurídico</h3>
+<ul>
+<li><b>Existência</b>: vontade, finalidade negocial, idoneidade do objeto.</li>
+<li><b>Validade (art. 104)</b>: capacidade, objeto lícito, forma. (Finalidade negocial é de existência, não de validade.)</li>
+<li><b>Condição</b> (art. 121): futuro e <b>incerto</b>. <b>Termo</b> (art. 132): futuro e <b>certo</b>. <b>Encargo</b> (art. 136): ônus.</li>
+<li>Defeitos: erro, dolo, coação, estado de perigo, lesão; e fraude contra credores.</li>
+</ul>
+<h3>7. Casamento e regime de bens</h3>
+<ul>
+<li>Casar aos 16 com autorização (art. 1.517). Sem pacto, vigora a <b>comunhão parcial</b> (art. 1.640).</li>
+<li><b>Separação de bens obrigatória para o maior de 70</b> (art. 1.641, II), para evitar o "golpe do baú". Não torna o idoso incapaz.</li>
+</ul>`
+    },
+    {
+      id: "mnem", titulo: "Mnemônicos",
+      html: `
+<h3>Idades (16, 18, 60, 65, 80)</h3>
+<p>"Aos 16 começo, aos 18 posso tudo, aos 60 sou idoso, aos 65 viajo de graça, aos 80 passo na frente."</p>
+<h3>Relativamente incapazes (art. 4º)</h3>
+<p><b>16-18 · Bebida/Droga · Sem-voz · Pródigo</b>.</p>
+<h3>Direitos sociais (art. 6º)</h3>
+<p>"Em Salas Tem Muito Lugar Seguro" = Educação, Saúde, Trabalho, Moradia, Lazer, Segurança. (Propriedade é do art. 5º.)</p>
+<h3>Gerontologia x Geriatria</h3>
+<p>Geria<b>TRI</b>a = médico que <b>trata</b> (Medicina). Geronto<b>logia</b> = ciência (como bio-logia).</p>
+<h3>Datas do HIV</h3>
+<p>1981 casos · 1983 HIV-1 · 1986 HIV-2 · 1996 SUS dá remédio · 2013 tratamento para todos.</p>
+<h3>As três leis</h3>
+<p>CDC 8.078/1990 · Política Nacional do Idoso 8.842/1994 · Estatuto 10.741/2003.</p>
+<h3>Negócio jurídico</h3>
+<p>Validade = <b>C.O.F.</b> (Capacidade, Objeto, Forma). Condição = in<b>C</b>erto; Termo = cer<b>T</b>o.</p>
+<h3>Aos 70 (não confunda com 60)</h3>
+<p>"Aos 70: separa os bens, abranda a pena e corta a prescrição."</p>
+<h3>Estelionato contra idoso</h3>
+<p>"Idoso enganado, pena dobrada" (art. 171, §4º).</p>`
+    },
+    {
+      id: "linha", titulo: "Linha do tempo e números",
+      html: `
+<h3>Datas</h3>
+<table>
+<tr><th>Ano</th><th>Acontecimento</th></tr>
+<tr><td>1981</td><td>Primeiros casos que levariam ao HIV</td></tr>
+<tr><td>1983</td><td>HIV-1 identificado</td></tr>
+<tr><td>1986</td><td>HIV-2 identificado</td></tr>
+<tr><td>1990</td><td>Lei 8.078: Código de Defesa do Consumidor</td></tr>
+<tr><td>1994</td><td>Lei 8.842: Política Nacional do Idoso</td></tr>
+<tr><td>1996</td><td>SUS passa a fornecer antirretrovirais</td></tr>
+<tr><td>2003</td><td>Lei 10.741: Estatuto da Pessoa Idosa</td></tr>
+<tr><td>2013</td><td>SUS garante tratamento de HIV a todos</td></tr>
+</table>
+<h3>Idades</h3>
+<table>
+<tr><th>Idade</th><th>Significa</th></tr>
+<tr><td>menor de 16</td><td>Absolutamente incapaz</td></tr>
+<tr><td>16 a 18</td><td>Relativamente incapaz</td></tr>
+<tr><td>18</td><td>Maioridade</td></tr>
+<tr><td>60</td><td>Pessoa idosa (Estatuto)</td></tr>
+<tr><td>65</td><td>Transporte gratuito</td></tr>
+<tr><td>70</td><td>Separação de bens; atenuante e prescrição (crimes)</td></tr>
+<tr><td>80</td><td>Prioridade especial</td></tr>
+</table>
+<h3>Porcentagens</h3>
+<table>
+<tr><th>Número</th><th>Refere-se a</th></tr>
+<tr><td>50%</td><td>Desconto em cultura e lazer (art. 23)</td></tr>
+<tr><td>10%</td><td>Assentos reservados no transporte (art. 39)</td></tr>
+<tr><td>75%</td><td>Lesões em 60+ por acidentes domésticos</td></tr>
+<tr><td>dobro</td><td>Pena do estelionato contra idoso</td></tr>
+</table>`
+    },
+    {
+      id: "mapa", titulo: "Mapa mental (esquema)",
+      html: `
+<ul class="mapa">
+<li>Direito Civil
+  <ul>
+    <li>Público x Privado (critério: Estado)</li>
+    <li>Personalidade: início art. 2º (nascimento), fim art. 6º (morte)</li>
+    <li>Capacidade: absoluta (menor de 16), relativa (16-18, ébrios, sem-voz, pródigos)</li>
+    <li>Interdição: curatela 1.767; CPC 747/748/750/751/755</li>
+  </ul>
+</li>
+<li>Estatuto da Pessoa Idosa (Lei 10.741/2003)
+  <ul>
+    <li>Protege 60+; art. 8º personalíssimo e social</li>
+    <li>65 transporte; 80 prioridade especial; art. 17 escolhe tratamento</li>
+  </ul>
+</li>
+<li>Constituição
+  <ul><li>Art. 5º fundamentais; Art. 6º sociais</li></ul>
+</li>
+<li>Envelhecimento e saúde
+  <ul><li>Gerontofobia; envelhecimento ativo (OMS); gerontologia (ciência) x geriatria (Medicina)</li></ul>
+</li>
+<li>HIV / Aids
+  <ul><li>1981 / 1983 / 1986; transmissão sexual, sanguínea, perinatal; SUS 1996 e 2013</li></ul>
+</li>
+<li>Unidade II: Vulnerabilidade e consumo
+  <ul><li>CDC 8.078/1990; hipervulnerabilidade; solidão</li></ul>
+</li>
+<li>Unidade II: Família, crimes e negócio jurídico
+  <ul><li>Alimentos (CC 1.694-1.697); crimes (estelionato em dobro; maior de 70); negócio jurídico (existência x validade; condição x termo)</li></ul>
+</li>
+</ul>`
+    }
+  ],
   cards: [
     // --- Direito público e privado ---
     { id: "u1-01", unidade: 1, frente: "Qual o critério que separa <b>Direito público</b> e <b>Direito privado</b>?", verso: "A <b>presença ou não do Estado</b> na relação. Público envolve a pessoa e o Estado; privado, relações entre particulares.", dica: "Divisão herdada do Direito Romano, e apenas didática." },
